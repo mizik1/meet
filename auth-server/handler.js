@@ -5,7 +5,6 @@ const calendar = google.calendar("v3");
 const SCOPES = ["https://www.googleapis.com/auth/calendar.events.public.readonly"];
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 const redirect_uris = ["https://mizik1.github.io/meet/"];
-
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, redirect_uris[0]);
 
 module.exports.getAuthURL = async () => {
@@ -64,37 +63,53 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
+  // Parse the access_token from the request body
   const { access_token } = JSON.parse(event.body);
 
+  // Set OAuth2 credentials using the access_token
   oAuth2Client.setCredentials({ access_token });
 
-  try {
-    const res = await calendar.events.list({
-      calendarId: CALENDAR_ID,
-      timeMin: new Date().toISOString(), // Fetch events starting from now
-      maxResults: 10, // Limit the number of results
-      singleEvents: true,
-      orderBy: "startTime",
-    });
-
-    const events = res.data.items;
-
-    if (!events || events.length === 0) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: "No upcoming events found." }),
-      };
-    }
-
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+  return new Promise((resolve, reject) => {
+    // Call Google Calendar API to fetch upcoming events
+    calendar.events.list(
+      {
+        calendarId: CALENDAR_ID, // Calendar ID from environment variables
+        auth: oAuth2Client, // Auth using OAuth2 client
+        timeMin: new Date().toISOString(), // Fetch events starting from now
+        singleEvents: true, // Expand recurring events into separate ones
+        orderBy: "startTime", // Order events by start time
       },
-      body: JSON.stringify(events),
-    };
-  } catch (error) {
+      (error, response) => {
+        if (error) {
+          return reject({
+            statusCode: 500,
+            body: JSON.stringify({
+              message: "Error fetching calendar events",
+              error: error.message,
+            }),
+          });
+        }
+
+        const events = response.data.items;
+        if (!events || events.length === 0) {
+          return resolve({
+            statusCode: 404,
+            body: JSON.stringify({ message: "No upcoming events found." }),
+          });
+        }
+
+        return resolve({
+          statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
+          body: JSON.stringify(events),
+        });
+      }
+    );
+  }).catch((error) => {
+    // Handle promise rejection errors
     return {
       statusCode: 500,
       body: JSON.stringify({
@@ -102,5 +117,5 @@ module.exports.getCalendarEvents = async (event) => {
         error: error.message,
       }),
     };
-  }
+  });
 };
