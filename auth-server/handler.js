@@ -9,11 +9,6 @@ const redirect_uris = ["https://mizik1.github.io/meet/"];
 const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, redirect_uris[0]);
 
 module.exports.getAuthURL = async () => {
-  /**
-   *
-   * Scopes array is passed to the `scope` option.
-   *
-   */
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     scope: SCOPES,
@@ -66,4 +61,46 @@ module.exports.getAccessToken = async (event) => {
         body: JSON.stringify(error),
       };
     });
+};
+
+module.exports.getCalendarEvents = async (event) => {
+  const { access_token } = JSON.parse(event.body);
+
+  oAuth2Client.setCredentials({ access_token });
+
+  try {
+    const res = await calendar.events.list({
+      calendarId: CALENDAR_ID,
+      timeMin: new Date().toISOString(), // Fetch events starting from now
+      maxResults: 10, // Limit the number of results
+      singleEvents: true,
+      orderBy: "startTime",
+    });
+
+    const events = res.data.items;
+
+    if (!events || events.length === 0) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: "No upcoming events found." }),
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify(events),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "Error retrieving calendar events",
+        error: error.message,
+      }),
+    };
+  }
 };
