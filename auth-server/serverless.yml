@@ -30,7 +30,7 @@ functions:
     events:
       - http:
           path: api/calendar/events
-          method: post
+          method: get
 # Uncomment if you need to add IAM permissions, environment variables, or resources
 #resources:
 #  Resources:
