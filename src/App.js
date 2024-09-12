@@ -1,12 +1,22 @@
+import EventList from "./components/EventList";
 import "./App.css";
 
-function App() {
-  return <div className="App"></div>;
-}
+const App = () => {
+  return (
+    <div className="App">
+      <EventList />
+    </div>
+  );
+};
 
 export default App;
 
 //  old code
+
+// function App() {
+//   return <div className="App"></div>;
+// }
+
 // import "./App.css";
 
 // function App() {
