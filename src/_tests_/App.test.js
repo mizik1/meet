@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { act } from "react"; // Import act from react
 import App from "../App";
 import { getEvents } from "../api"; // Import the mock
 
