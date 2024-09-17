@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getEvents } from "../_mocks_/api";
+import { getEvents } from "../api"; // Make sure this is correctly imported
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -9,11 +9,9 @@ const EventList = () => {
   }, []);
 
   return (
-    <ul id="event-list" role="list">
-      {events.map((event) => (
-        <li key={event.id} role="listitem">
-          {event.name} - {event.city}
-        </li>
+    <ul id="event-list">
+      {events.map((event, index) => (
+        <li key={index}>{event.name}</li>
       ))}
     </ul>
   );

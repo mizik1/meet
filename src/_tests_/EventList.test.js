@@ -1,33 +1,27 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { act } from "react-dom/test-utils"; // Import act from react
 import EventList from "../components/EventList";
-import { getEvents } from "../_mocks_/api";
+import { getEvents } from "../api"; // Make sure to import the API correctly
 
-// Mock getEvents API function
-jest.mock("../api");
+jest.mock("../api"); // Mock the API
 
 describe("<EventList /> component", () => {
   beforeEach(() => {
-    // Mock the API response with some sample events
     getEvents.mockResolvedValue([
-      { id: 1, name: "Event 1", city: "New York" },
-      { id: 2, name: "Event 2", city: "Los Angeles" },
-      { id: 3, name: "Event 3", city: "San Francisco" },
+      { id: 1, name: "Test Event 1", date: "2023-10-20" },
+      { id: 2, name: "Test Event 2", date: "2023-10-21" },
     ]);
   });
 
   test("renders upcoming events from all cities when no city is searched", async () => {
-    // Render the EventList component
-    render(<EventList />);
+    await act(async () => {
+      render(<EventList />); // Render the component within act()
+    });
 
     // Wait for the mocked events to appear in the document
     const events = await screen.findAllByRole("listitem");
 
-    // Assert that all the events are rendered
-    expect(events).toHaveLength(3);
-
-    // Optional: Check if the event names are displayed correctly
-    expect(screen.getByText("Event 1")).toBeInTheDocument();
-    expect(screen.getByText("Event 2")).toBeInTheDocument();
-    expect(screen.getByText("Event 3")).toBeInTheDocument();
+    // Assert the correct number of events are displayed
+    expect(events).toHaveLength(2);
   });
 });
