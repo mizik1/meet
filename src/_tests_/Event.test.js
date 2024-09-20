@@ -21,7 +21,7 @@ describe("Event component", () => {
   test("event details are collapsed by default", () => {
     render(<Event event={mockData} />);
 
-    // Check that the event details are not displayed initially
+    // Check that event details are not displayed initially
     const description = screen.queryByText(mockData.description);
     expect(description).not.toBeInTheDocument();
   });
@@ -29,11 +29,11 @@ describe("Event component", () => {
   test("user can expand and collapse event details", () => {
     render(<Event event={mockData} />);
 
-    // Test for an event to be initially collapsed
+    // Check that an event to be displayed is initially collapsed
     const description = screen.queryByText(mockData.description);
     expect(description).not.toBeInTheDocument();
 
-    // Test for user to expand details
+    // Check that a user can expand details
     fireEvent.click(screen.getByText("Show Details"));
     expect(screen.getByText(mockData.description)).toBeInTheDocument();
 
