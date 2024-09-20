@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getEvents, getSuggestions } from "../api"; // Ensure the API functions are imported
+import Event from "./Event"; // Import Event component
 
 const EventList = () => {
   const [events, setEvents] = useState([]); // State for events
@@ -46,7 +47,7 @@ const EventList = () => {
       {/* Display events */}
       <ul id="event-list">
         {events.length > 0 ? (
-          events.map((event, index) => <li key={index}>{event.name}</li>)
+          events.map((event, index) => <Event key={index} event={event} />)
         ) : (
           <li>No events available</li> // Fallback for when there are no events
         )}
