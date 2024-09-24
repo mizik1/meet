@@ -1,13 +1,15 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import CitySearch from "../components/CitySearch";
-import { getSuggestions } from "../api"; // Ensure to mock getSuggestions
+import App from "../App";
+import { extractLocations, getEvents } from "../api";
 
 jest.mock("../api"); // Mock the API
 
 describe("<CitySearch /> component", () => {
+  let CitySearchComponent;
   beforeEach(() => {
-    // Mock the city suggestions API response
-    getSuggestions.mockResolvedValue(["New York", "Los Angeles", "San Francisco"]);
+    CitySearchComponent = render(<CitySearch allLocations={[]} />);
   });
 
   test("User should see a list of suggestions when they search for a city", async () => {
