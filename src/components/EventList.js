@@ -27,14 +27,6 @@ const EventList = () => {
 
   return (
     <div>
-      {/* City Search Input */}
-      <input
-        type="text"
-        placeholder="Search for a city"
-        value={query} // Controlled input bound to query state
-        onChange={handleInputChange} // Handle user input
-      />
-
       {/* Display city suggestions */}
       <ul id="suggestions-list">
         {suggestions.length > 0 ? (

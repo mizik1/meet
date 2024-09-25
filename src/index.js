@@ -1,33 +1,23 @@
-import CitySearch from "./components/CitySearch";
-import EventList from "./components/EventList";
-import NumberOfEvents from "./components/NumberOfEvents";
-import { useEffect, useState } from "react";
-import { extractLocations, getEvents } from "./api";
-import "./App.css";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import reportWebVitals from "./reportWebVitals";
 
-const App = () => {
-  const [events, setEvents] = useState([]);
-  const [currentNOE, setCurrentNOE] = useState(32);
-  const [allLocations, setAllLocations] = useState([]);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.unregister();
 
-  const fetchData = async () => {
-    const allEvents = await getEvents();
-    setEvents(allEvents.slice(0, currentNOE));
-    setAllLocations(extractLocations(allEvents));
-  };
-
-  return (
-    <div className="App">
-      <CitySearch allLocations={allLocations} />
-      <NumberOfEvents />
-      <EventList events={events} />
-    </div>
-  );
-};
-
-// Ensure App component is exported as the default export
-export default App;
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
