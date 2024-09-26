@@ -6,7 +6,7 @@ const NumberOfEvents = ({ currentNOE, setCurrentNOE }) => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setInputValue(value);
-    setCurrentNOE(Number(value)); // Update the parent component with the new value
+    setCurrentNOE(Number(value));
   };
 
   return (

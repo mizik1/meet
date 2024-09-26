@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { getSuggestions } from "../api"; // Import the API function for fetching city suggestions
 
 const CitySearch = ({ onCitySelect }) => {
@@ -27,26 +27,39 @@ const CitySearch = ({ onCitySelect }) => {
     }
   };
 
+  // Handle form submission
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    if (onCitySelect) {
+      onCitySelect(query); // Call the callback with the current query
+    }
+  };
+
   return (
     <div>
-      {/* Input field for searching cities */}
-      <input
-        type="text"
-        placeholder="Search for a city"
-        value={query} // Controlled input value
-        onChange={handleInputChange} // Handle user input
-      />
+      <form onSubmit={handleFormSubmit}>
+        {/* Input field for searching cities */}
+        <input
+          type="text"
+          placeholder="Search for a city"
+          value={query} // Controlled input value
+          onChange={handleInputChange} // Handle user input
+        />
 
-      {/* Display the city suggestions */}
-      {suggestions.length > 0 && (
-        <ul id="suggestions-list">
-          {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* Display the city suggestions */}
+        {suggestions.length > 0 && (
+          <ul id="suggestions-list">
+            {suggestions.map((suggestion, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Submit button to search by city */}
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };
