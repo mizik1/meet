@@ -1,65 +1,57 @@
-import React, { useState } from "react";
-import { getSuggestions } from "../api"; // Import the API function for fetching city suggestions
+import { useState, useEffect } from "react";
 
-const CitySearch = ({ onCitySelect }) => {
-  const [query, setQuery] = useState(""); // State for the search query
-  const [suggestions, setSuggestions] = useState([]); // State for the city suggestions
+const CitySearch = ({ allLocations, setCurrentCity }) => {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
-  // Handle input change to update the query and fetch suggestions
-  const handleInputChange = (event) => {
+  const handleInputChanged = (event) => {
     const value = event.target.value;
-    setQuery(value); // Update the query state
+    const filteredLocations = allLocations
+      ? allLocations.filter((location) => {
+          return location.toUpperCase().indexOf(value.toUpperCase()) > -1;
+        })
+      : [];
 
-    if (value) {
-      // Fetch city suggestions based on the input value
-      getSuggestions(value).then((suggestions) => setSuggestions(suggestions));
-    } else {
-      setSuggestions([]); // Clear suggestions if input is empty
-    }
+    setQuery(value);
+    setSuggestions(filteredLocations);
   };
 
-  // Handle the city suggestion selection
-  const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion); // Set the query to the selected suggestion
-    setSuggestions([]); // Clear the suggestions after selection
-    if (onCitySelect) {
-      onCitySelect(suggestion); // Call the callback to notify the parent component
-    }
+  const handleItemClicked = (event) => {
+    const value = event.target.textContent;
+    setQuery(value);
+    setShowSuggestions(false);
+    setCurrentCity(value);
   };
 
-  // Handle form submission
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    if (onCitySelect) {
-      onCitySelect(query); // Call the callback with the current query
-    }
-  };
+  useEffect(() => {
+    setSuggestions(allLocations);
+  }, [`${allLocations}`]);
 
   return (
-    <div>
-      <form onSubmit={handleFormSubmit}>
-        {/* Input field for searching cities */}
-        <input
-          type="text"
-          placeholder="Search for a city"
-          value={query} // Controlled input value
-          onChange={handleInputChange} // Handle user input
-        />
-
-        {/* Display the city suggestions */}
-        {suggestions.length > 0 && (
-          <ul id="suggestions-list">
-            {suggestions.map((suggestion, index) => (
-              <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+    <div id="city-search">
+      <input
+        type="text"
+        className="city"
+        placeholder="Search for a city"
+        value={query}
+        onFocus={() => setShowSuggestions(true)}
+        onChange={handleInputChanged}
+      />
+      {showSuggestions ? (
+        <ul className="suggestions">
+          {suggestions.map((suggestion) => {
+            return (
+              <li onClick={handleItemClicked} key={suggestion}>
                 {suggestion}
               </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Submit button to search by city */}
-        <button type="submit">Submit</button>
-      </form>
+            );
+          })}
+          <li key="See all cities" onClick={handleItemClicked}>
+            <b>See all cities</b>
+          </li>
+        </ul>
+      ) : null}
     </div>
   );
 };

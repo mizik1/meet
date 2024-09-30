@@ -1,13 +1,6 @@
-// Simulate fetching events
+import mockData from "./mock-data";
 export const getEvents = () => {
-  return new Promise((resolve) => {
-    const events = [
-      { id: 1, name: "Event 1", date: "2023-10-15", location: "New York" },
-      { id: 2, name: "Event 2", date: "2023-10-16", location: "Los Angeles" },
-      { id: 3, name: "Event 3", date: "2023-10-17", location: "New York" },
-    ];
-    setTimeout(() => resolve(events), 1000);
-  });
+  return mockData;
 };
 
 // Simulate fetching city suggestions

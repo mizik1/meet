@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const NumberOfEvents = ({ currentNOE, setCurrentNOE }) => {
-  const [inputValue, setInputValue] = useState(currentNOE);
-
+const NumberOfEvents = () => {
+  const [eventNumber, setEventNumber] = useState("32");
   const handleInputChange = (event) => {
     const value = event.target.value;
-    setInputValue(value);
-    setCurrentNOE(Number(value));
+    setEventNumber(value);
   };
-
   return (
-    <div className="number-of-events">
-      <label htmlFor="number-of-events-input">Number of Events:</label>
-      <input type="number" id="number-of-events-input" value={inputValue} onChange={handleInputChange} min="1" />
+    <div id="number-of-events">
+      <input type="text" value={eventNumber} onChange={handleInputChange} />
     </div>
   );
 };
