@@ -1,23 +1,33 @@
-import { render, screen } from "@testing-library/react";
+import { render, within, waitFor } from "@testing-library/react";
 import EventList from "../components/EventList";
-import { getEvents } from "../api"; // Ensure to mock getEvents
-
-jest.mock("../api"); // Mock the API
+import { getEvents } from "../api";
+import App from "../App";
 
 describe("<EventList /> component", () => {
+  let EventListComponent;
   beforeEach(() => {
-    // Mock the events API response
-    getEvents.mockResolvedValue([
-      { id: 1, name: "Event 1", date: "2023-10-15" },
-      { id: 2, name: "Event 2", date: "2023-10-16" },
-    ]);
+    EventListComponent = render(<EventList />);
   });
 
-  test("renders upcoming events from all cities when no city is searched", async () => {
-    render(<EventList />); // Render the EventList component
+  test('has an element with "list" role', () => {
+    expect(EventListComponent.queryByRole("list")).toBeInTheDocument();
+  });
 
-    // Wait for the events to appear in the document
-    const events = await screen.findAllByRole("listitem");
-    expect(events).toHaveLength(2); // Assert the correct number of events
+  test("renders correct number of events", async () => {
+    const allEvents = await getEvents();
+    EventListComponent.rerender(<EventList events={allEvents} />);
+    expect(EventListComponent.getAllByRole("listitem")).toHaveLength(allEvents.length);
+  });
+});
+
+describe("<EventList /> integration", () => {
+  test("renders a list of 32 events when the app is mounted and rendered", async () => {
+    const AppComponent = render(<App />);
+    const AppDOM = AppComponent.container.firstChild;
+    const EventListDOM = AppDOM.querySelector("#event-list");
+    await waitFor(() => {
+      const EventListItems = within(EventListDOM).queryAllByRole("listitem");
+      expect(EventListItems.length).toBe(32);
+    });
   });
 });

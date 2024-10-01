@@ -10,21 +10,23 @@ function App() {
   const [currentNOE, setCurrentNOE] = useState(32); // Default number of events
   const [allLocations, setAllLocations] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [currentCity, setCurrentCity] = useState("See all cities");
 
   useEffect(() => {
     fetchData();
-  }, [currentNOE]);
+  }, [currentCity]);
 
   const fetchData = async () => {
     const allEvents = await getEvents();
-    setEvents(allEvents.slice(0, currentNOE)); // Limit events based on currentNOE
-    setAllLocations(extractLocations(allEvents)); // Extract unique locations
-    setFilteredEvents(allEvents.slice(0, currentNOE)); // Initialize with all events
+    const filteredEvents =
+      currentCity === "See all cities" ? allEvents : allEvents.filter((event) => event.location === currentCity);
+    setEvents(filteredEvents.slice(0, currentNOE));
+    setAllLocations(extractLocations(allEvents));
+    setFilteredEvents(filteredEvents.slice(0, currentNOE)); // Also update filteredEvents here
   };
 
   const handleCitySearch = (city) => {
-    const filtered = events.filter((event) => event.location === city);
-    setFilteredEvents(filtered.slice(0, currentNOE)); // Apply the current number of events limit
+    setCurrentCity(city);
   };
 
   return (

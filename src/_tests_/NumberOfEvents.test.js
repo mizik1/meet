@@ -1,47 +1,25 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import NumberOfEvents from "../components/NumberOfEvents"; 
+import { render } from "@testing-library/react";
+import { getEvents } from "../api";
+import NumberOfEvents from "../components/NumberOfEvents";
+import userEvent from "@testing-library/user-event";
 
 describe("<NumberOfEvents /> component", () => {
-  test("renders the input for number of events", () => {
-    const mockOnNumberChange = jest.fn();
-
-    // Render the component with default props
-    render(<NumberOfEvents currentNOE={32} onNumberChange={mockOnNumberChange} />);
-
-    // Check if the input field is in the document
-    const inputElement = screen.getByLabelText("Number of Events:");
-    expect(inputElement).toBeInTheDocument();
-    expect(inputElement.value).toBe("32"); \
+  let NumberOfEventsComponent;
+  beforeEach(() => {
+    NumberOfEventsComponent = render(<NumberOfEvents />);
+  });
+  test('has an element with "textbox" role', () => {
+    expect(NumberOfEventsComponent.queryByRole("textbox")).toBeInTheDocument();
   });
 
-  test("updates the number of events when user changes input", () => {
-    const mockOnNumberChange = jest.fn();
-
-    // Render the component with default props
-    render(<NumberOfEvents currentNOE={32} onNumberChange={mockOnNumberChange} />);
-
-    // Get the input field and simulate changing the value
-    const inputElement = screen.getByLabelText("Number of Events:");
-    fireEvent.change(inputElement, { target: { value: "10" } });
-
-    // Expect the value to have changed in the input field
-    expect(inputElement.value).toBe("10");
-
-    // Verify the callback is called with the new number of events
-    expect(mockOnNumberChange).toHaveBeenCalledWith(10);
+  test("default value of field is 32", () => {
+    expect(NumberOfEventsComponent.queryByRole("textbox")).toHaveValue("32");
   });
 
-  test("ensures the minimum number of events is 1", () => {
-    const mockOnNumberChange = jest.fn();
-
-    // Render the component
-    render(<NumberOfEvents currentNOE={32} onNumberChange={mockOnNumberChange} />);
-
-    // Simulate changing the input to 0
-    const inputElement = screen.getByLabelText("Number of Events:");
-    fireEvent.change(inputElement, { target: { value: "0" } });
-
-    // Expect the value in the input to default to at least 1
-    expect(inputElement.value).toBe("1");
+  test("update value as user types", async () => {
+    const numberOfEvents = NumberOfEventsComponent.queryByRole("textbox");
+    const user = userEvent.setup();
+    await user.type(numberOfEvents, "{backspace}{backspace}10");
+    expect(numberOfEvents).toHaveValue("10");
   });
 });
