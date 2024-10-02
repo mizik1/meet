@@ -9,7 +9,7 @@ if (!accessToken || tokenCheck.error) {
   const searchParams = new URLSearchParams(window.location.search);
   const code = await searchParams.get("code");
   if (!code) {
-    const response = await fetch("YOUR_SERVERLESS_GET_AUTH_URL_ENDPOINT");
+    const response = await fetch("`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`");
     const result = await response.json();
     const { authUrl } = result;
     return (window.location.href = authUrl);
@@ -28,6 +28,20 @@ const removeQuery = () => {
   }
 };
 
+const tokenCheck = accessToken && (await checkToken(accessToken));
+
+if (!accessToken || tokenCheck.error) {
+  await localStorage.removeItem("access_token");
+  const searchParams = new URLSearchParams(window.location.search);
+  const code = await searchParams.get("code");
+  if (!code) {
+    const response = await fetch("YOUR_SERVERLESS_GET_AUTH_URL_ENDPOINT");
+    const result = await response.json();
+    const { authUrl } = result;
+    return (window.location.href = authUrl);
+  }
+  return code && getToken(code);
+}
 return accessToken;
 
 // OLD CODE USING MOCK DATA
