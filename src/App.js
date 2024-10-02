@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div className="App">
-      <CitySearch allLocations={allLocations} onCitySearch={handleCitySearch} />
+      <CitySearch allLocations={allLocations} setCurrentCity={handleCitySearch} />
       <NumberOfEvents currentNOE={currentNOE} setCurrentNOE={setCurrentNOE} />
       <EventList events={filteredEvents} />
     </div>

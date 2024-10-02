@@ -18,8 +18,7 @@ describe("<NumberOfEvents /> component", () => {
 
   test("update value as user types", async () => {
     const numberOfEvents = NumberOfEventsComponent.queryByRole("textbox");
-    const user = userEvent.setup();
-    await user.type(numberOfEvents, "{backspace}{backspace}10");
+    await userEvent.type(numberOfEvents, "{backspace}{backspace}10");
     expect(numberOfEvents).toHaveValue("10");
   });
 });

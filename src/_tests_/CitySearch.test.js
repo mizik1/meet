@@ -4,8 +4,6 @@ import CitySearch from "../components/CitySearch";
 import App from "../App";
 import { extractLocations, getEvents } from "../api";
 
-jest.mock("../api"); // Mock the API
-
 describe("<CitySearch /> component", () => {
   let CitySearchComponent;
   beforeEach(() => {
