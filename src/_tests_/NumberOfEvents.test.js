@@ -3,6 +3,8 @@ import { getEvents } from "../api";
 import NumberOfEvents from "../components/NumberOfEvents";
 import userEvent from "@testing-library/user-event";
 
+NumberOfEventsComponent = render(<NumberOfEvents setCurrentNOE={() => {}} />);
+
 describe("<NumberOfEvents /> component", () => {
   let NumberOfEventsComponent;
   beforeEach(() => {
