@@ -48,19 +48,25 @@ const removeQuery = () => {
   }
 };
 
-// OLD CODE USING MOCK DATA
+// Function to check if the token is valid
+export const checkToken = async (accessToken) => {
+  const url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`;
+  const response = await fetch(url);
+  const result = await response.json();
+  return result;
+};
 
-// Simulate fetching city suggestions
-// export const getSuggestions = (query) => {
-//   return new Promise((resolve) => {
-//     const cities = ["New York", "Los Angeles", "San Francisco", "Chicago", "Miami"];
-//     const filteredCities = cities.filter((city) => city.toLowerCase().includes(query.toLowerCase()));
-//     setTimeout(() => resolve(filteredCities), 500); // Simulate network latency
-//   });
-// };
+// Function to exchange authorization code for access token
+export const getToken = async (code) => {
+  const encodeCode = encodeURIComponent(code);
+  const response = await fetch(`https://4mbcij85gk.execute-api.us-west-1.amazonaws.com/dev/api/token/${encodeCode}`);
+  const { access_token } = await response.json();
+  localStorage.setItem("access_token", access_token);
+  return access_token;
+};
 
 // Extract unique locations from events
-// export const extractLocations = (events) => {
-//   const locations = events.map((event) => event.location);
-//   return [...new Set(locations)]; // Return unique locations
-// };
+export const extractLocations = (events) => {
+  const locations = events.map((event) => event.location);
+  return [...new Set(locations)];
+};
