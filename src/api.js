@@ -1,9 +1,4 @@
 import mockData from "./mock-data";
-export const getEvents = () => {
-  if (window.location.href.startsWith("http://localhost")) {
-    return mockData;
-  }
-};
 
 export const getEvents = async () => {
   if (window.location.href.startsWith("http://localhost")) {
@@ -14,7 +9,7 @@ export const getEvents = async () => {
 
   if (token) {
     removeQuery();
-    const url = "YOUR_GET_EVENTS_API_ENDPOINT" + "/" + token;
+    const url = "https://4mbcij85gk.execute-api.us-west-1.amazonaws.com/dev/api/get-events" + "/" + token;
     const response = await fetch(url);
     const result = await response.json();
     if (result) {
@@ -23,24 +18,24 @@ export const getEvents = async () => {
   }
 };
 
-export const getAccessToken = async () => {};
+export const getAccessToken = async () => {
+  const accessToken = localStorage.getItem("access_token");
+  const tokenCheck = accessToken && (await checkToken(accessToken));
 
-const accessToken = localStorage.getItem("access_token");
-
-const tokenCheck = accessToken && (await checkToken(accessToken));
-
-if (!accessToken || tokenCheck.error) {
-  await localStorage.removeItem("access_token");
-  const searchParams = new URLSearchParams(window.location.search);
-  const code = await searchParams.get("code");
-  if (!code) {
-    const response = await fetch("`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`");
-    const result = await response.json();
-    const { authUrl } = result;
-    return (window.location.href = authUrl);
+  if (!accessToken || tokenCheck.error) {
+    await localStorage.removeItem("access_token");
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = await searchParams.get("code");
+    if (!code) {
+      const response = await fetch("https://4mbcij85gk.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url");
+      const result = await response.json();
+      const { authUrl } = result;
+      return (window.location.href = authUrl);
+    }
+    return code && getToken(code);
   }
-  return code && getToken(code);
-}
+  return accessToken;
+};
 
 const removeQuery = () => {
   let newurl;
@@ -52,22 +47,6 @@ const removeQuery = () => {
     window.history.pushState("", "", newurl);
   }
 };
-
-const tokenCheck = accessToken && (await checkToken(accessToken));
-
-if (!accessToken || tokenCheck.error) {
-  await localStorage.removeItem("access_token");
-  const searchParams = new URLSearchParams(window.location.search);
-  const code = await searchParams.get("code");
-  if (!code) {
-    const response = await fetch("`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`");
-    const result = await response.json();
-    const { authUrl } = result;
-    return (window.location.href = authUrl);
-  }
-  return code && getToken(code);
-}
-return accessToken;
 
 // OLD CODE USING MOCK DATA
 
