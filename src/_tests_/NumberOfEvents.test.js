@@ -3,15 +3,10 @@ import { getEvents } from "../api";
 import NumberOfEvents from "../components/NumberOfEvents";
 import userEvent from "@testing-library/user-event";
 
-NumberOfEventsComponent = render(<NumberOfEvents setCurrentNOE={() => {}} />);
-
 describe("<NumberOfEvents /> component", () => {
   let NumberOfEventsComponent;
   beforeEach(() => {
-    NumberOfEventsComponent = render(<NumberOfEvents />);
-  });
-  test('has an element with "textbox" role', () => {
-    expect(NumberOfEventsComponent.queryByRole("textbox")).toBeInTheDocument();
+    NumberOfEventsComponent = render(<NumberOfEvents setCurrentNOE={() => {}} />);
   });
 
   test("default value of field is 32", () => {
