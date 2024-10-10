@@ -4,7 +4,7 @@ Scenario: When user hasn’t searched for a city, show upcoming events from all 
 
 Given the user has not searched for a city
 When the user views the event list
-Then the user should see upcoming events from all cities
+Then the user should see upcoming events from all of the cities
 
 Scenario: User should see a list of suggestions when they search for a city
 
