@@ -1,6 +1,7 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import { render, within, fireEvent, waitFor } from "@testing-library/react";
+import { render, within, waitFor } from "@testing-library/react";
 import App from "../App";
+import userEvent from "@testing-library/user-event";
 
 const feature = loadFeature("./src/features/specifyNumberOfEvents.feature");
 
@@ -38,9 +39,10 @@ defineFeature(feature, (test) => {
       AppComponent = render(<App />);
     });
 
-    when("the user specifies a different number of events", () => {
+    when("the user specifies a different number of events", async () => {
       const NumberOfEventsInput = AppComponent.container.querySelector(".number-of-events-input");
-      fireEvent.change(NumberOfEventsInput, { target: { value: "10" } });
+      await userEvent.clear(NumberOfEventsInput);
+      await userEvent.type(NumberOfEventsInput, "10");
     });
 
     then("the specified number of events should be displayed", async () => {

@@ -1,6 +1,7 @@
 import { loadFeature, defineFeature } from "jest-cucumber";
-import { render, fireEvent, within, waitFor } from "@testing-library/react";
+import { render, within, waitFor } from "@testing-library/react";
 import App from "../App";
+import userEvent from "@testing-library/user-event";
 
 const feature = loadFeature("./src/features/filterEventsByCity.feature");
 
@@ -22,13 +23,12 @@ defineFeature(feature, (test) => {
       });
     });
 
-    then("the user should see upcoming events from all cities", async () => {
+    then("the user should see upcoming events from all of the cities", async () => {
       const AppDOM = AppComponent.container.firstChild;
       const EventListDOM = AppDOM.querySelector("#event-list");
-      const EventListItems = within(EventListDOM).queryAllByRole("listitem");
-      EventListItems.forEach((eventItem) => {
-        const eventLocation = within(eventItem).getByText(/Location:/i);
-        expect(eventLocation).toBeInTheDocument();
+      await waitFor(() => {
+        const EventListItems = within(EventListDOM).queryAllByRole("listitem");
+        expect(EventListItems.length).toBe(32);
       });
     });
   });
@@ -41,10 +41,10 @@ defineFeature(feature, (test) => {
       AppComponent = render(<App />);
     });
 
-    when("the user types in the search bar", () => {
+    when("the user types in the search bar", async () => {
       const AppDOM = AppComponent.container.firstChild;
       const citySearchInput = AppDOM.querySelector(".city");
-      fireEvent.change(citySearchInput, { target: { value: "Berlin" } });
+      await userEvent.type(citySearchInput, "Berlin");
     });
 
     then("the user should see a list of city suggestions matching the input", async () => {
@@ -65,26 +65,26 @@ defineFeature(feature, (test) => {
       AppComponent = render(<App />);
       const AppDOM = AppComponent.container.firstChild;
       const citySearchInput = AppDOM.querySelector(".city");
-      fireEvent.change(citySearchInput, { target: { value: "Berlin" } });
+      userEvent.type(citySearchInput, "Berlin");
 
-      const suggestionList = AppDOM.querySelector(".suggestions");
       await waitFor(() => {
+        const suggestionList = AppDOM.querySelector(".suggestions");
         const suggestionItems = within(suggestionList).queryAllByRole("listitem");
         expect(suggestionItems.length).toBeGreaterThan(0);
       });
     });
 
-    when("the user selects a city from the suggested list", () => {
+    when("the user selects a city from the suggested list", async () => {
       const AppDOM = AppComponent.container.firstChild;
       const suggestionList = AppDOM.querySelector(".suggestions");
-      const berlinSuggestion = within(suggestionList).getByText("Berlin");
-      fireEvent.click(berlinSuggestion);
+      const berlinSuggestion = within(suggestionList).getByText("Berlin, Germany");
+      await userEvent.click(berlinSuggestion);
     });
 
     then("the selected city should be set as the search criteria", async () => {
       const AppDOM = AppComponent.container.firstChild;
       const citySearchInput = AppDOM.querySelector(".city");
-      expect(citySearchInput.value).toBe("Berlin");
+      expect(citySearchInput.value).toBe("Berlin, Germany");
     });
 
     and("the user should see events for the selected city", async () => {
@@ -92,7 +92,7 @@ defineFeature(feature, (test) => {
       const EventListDOM = AppDOM.querySelector("#event-list");
       const EventListItems = within(EventListDOM).queryAllByRole("listitem");
       EventListItems.forEach((eventItem) => {
-        const eventLocation = within(eventItem).getByText(/Berlin/i);
+        const eventLocation = within(eventItem).getByText(/Berlin, Germany/i);
         expect(eventLocation).toBeInTheDocument();
       });
     });
