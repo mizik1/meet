@@ -20,7 +20,7 @@ describe("show/hide event details", () => {
   });
 
   test("User can expand an event to see details", async () => {
-    await page.click(".event .details-btn");
+    await page.click(".event. details-button");
     const eventDetails = await page.$(".event .details");
     expect(eventDetails).toBeDefined();
   });

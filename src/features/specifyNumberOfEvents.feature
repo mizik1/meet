@@ -1,4 +1,5 @@
-Feature 3: Specify Number of Events
+Feature: Specify Number of Events
+
     Scenario: When user hasn’t specified a number, 32 events are shown by default
         Given the user has not specified a number of events to display
         When the user views the event list
