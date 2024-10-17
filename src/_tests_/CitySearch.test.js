@@ -1,3 +1,5 @@
+// src/__tests__/CitySearch.js
+
 import { render, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CitySearch from "../components/CitySearch";
@@ -7,7 +9,7 @@ import { extractLocations, getEvents } from "../api";
 describe("<CitySearch /> component", () => {
   let CitySearchComponent;
   beforeEach(() => {
-    CitySearchComponent = render(<CitySearch allLocations={[]} />);
+    CitySearchComponent = render(<CitySearch allLocations={[]} setCurrentCity={() => {}} setInfoAlert={() => {}} />);
   });
 
   test("User should see a list of suggestions when they search for a city", async () => {

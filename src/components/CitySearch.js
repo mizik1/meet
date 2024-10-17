@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const CitySearch = ({ allLocations, setCurrentCity }) => {
+const CitySearch = ({ allLocations, setCurrentCity, setInfoAlert, setErrorAlert }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -15,6 +15,14 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
 
     setQuery(value);
     setSuggestions(filteredLocations);
+
+    if (filteredLocations.length === 0) {
+      setInfoAlert("");
+      setErrorAlert("We cannot find the city you are looking for. Please try another city.");
+    } else {
+      setInfoAlert("");
+      setErrorAlert("");
+    }
   };
 
   const handleItemClicked = (event) => {
@@ -22,6 +30,8 @@ const CitySearch = ({ allLocations, setCurrentCity }) => {
     setQuery(value);
     setShowSuggestions(false);
     setCurrentCity(value);
+    setInfoAlert("");
+    setErrorAlert(""); // Reset error when a city is selected
   };
 
   useEffect(() => {
