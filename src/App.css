@@ -1,3 +1,5 @@
+/* App.css */
+
 @import url(https://fonts.googleapis.com/css?family=Roboto:500);
 .App {
   text-align: center;
@@ -93,4 +95,9 @@ input[type="number"] {
   left: 20px;
   width: 250px;
   z-index: 1000;
+}
+
+.ErrorAlert {
+  color: red;
+  background-color: rgb(255, 220, 220); /* Light red background */
 }

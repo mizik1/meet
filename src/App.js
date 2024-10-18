@@ -3,7 +3,7 @@ import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import { extractLocations, getEvents } from "./api";
-import { InfoAlert, ErrorAlert } from "./components/Alert"; // import both alerts
+import { InfoAlert, ErrorAlert } from "./components/Alert"; // Import ErrorAlert as well
 import "./App.css";
 
 function App() {
@@ -28,23 +28,19 @@ function App() {
     setFilteredEvents(filteredEvents.slice(0, currentNOE)); // Also update filteredEvents here
   };
 
-  const handleCitySearch = (city) => {
-    setCurrentCity(city);
-  };
-
   return (
     <div className="App">
       <div className="alerts-container">
-        {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
-        {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+        {infoAlert && <InfoAlert text={infoAlert} />}
+        {errorAlert && <ErrorAlert text={errorAlert} />} {/* Display ErrorAlert */}
       </div>
       <CitySearch
         allLocations={allLocations}
         setCurrentCity={setCurrentCity}
         setInfoAlert={setInfoAlert}
-        setErrorAlert={setErrorAlert} // pass error alert handler
+        setErrorAlert={setErrorAlert}
       />
-      <NumberOfEvents setCurrentNOE={setCurrentNOE} />
+      <NumberOfEvents setCurrentNOE={setCurrentNOE} setErrorAlert={setErrorAlert} />
       <EventList events={filteredEvents} />
     </div>
   );

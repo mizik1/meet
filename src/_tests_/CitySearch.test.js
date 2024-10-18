@@ -20,6 +20,10 @@ describe("<CitySearch /> component", () => {
     CitySearchComponent.rerender(<CitySearch allLocations={allLocations} />);
     const citySearchInput = CitySearchComponent.getByPlaceholderText("Search for a city");
 
+    CitySearchComponent = render(
+      <CitySearch setErrorAlert={() => {}} allLocations={[]} setCurrentCity={() => {}} setInfoAlert={() => {}} />
+    );
+
     await userEvent.type(citySearchInput, "New");
     const suggestions = CitySearchComponent.queryAllByRole("listitem");
     expect(suggestions[0]).toHaveTextContent("New York");
