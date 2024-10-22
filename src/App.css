@@ -101,3 +101,13 @@ input[type="number"] {
   color: red;
   background-color: rgb(255, 220, 220); /* Light red background */
 }
+
+#city-search h1 {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+#city-search h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
