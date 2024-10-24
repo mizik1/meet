@@ -1,20 +1,33 @@
 import mockData from "./mock-data";
 
 export const getEvents = async () => {
+  // Use mock data if on localhost
   if (window.location.href.startsWith("http://localhost")) {
     return mockData;
   }
 
+  // If offline, return cached events from localStorage
+  if (!navigator.onLine) {
+    const cachedEvents = localStorage.getItem("events");
+    return cachedEvents ? JSON.parse(cachedEvents) : [];
+  }
+
+  // If online, get the access token and fetch events
   const token = await getAccessToken();
 
   if (token) {
     removeQuery();
-    const url = "https://4mbcij85gk.execute-api.us-west-1.amazonaws.com/dev/api/get-events" + "/" + token;
+    const url = `https://4mbcij85gk.execute-api.us-west-1.amazonaws.com/dev/api/get-events/${token}`;
     const response = await fetch(url);
     const result = await response.json();
-    if (result) {
-      return result;
-    } else return null;
+
+    if (result && result.events) {
+      // Cache events in localStorage
+      localStorage.setItem("events", JSON.stringify(result.events));
+      return result.events;
+    } else {
+      return null;
+    }
   }
 };
 
