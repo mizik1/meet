@@ -3,7 +3,7 @@ import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
 import { extractLocations, getEvents } from "./api";
-import { InfoAlert, ErrorAlert } from "./components/Alert"; // Import ErrorAlert as well
+import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert"; // Import WarningAlert
 import "./App.css";
 
 function App() {
@@ -14,6 +14,28 @@ function App() {
   const [currentCity, setCurrentCity] = useState("See all cities");
   const [infoAlert, setInfoAlert] = useState("");
   const [errorAlert, setErrorAlert] = useState("");
+  const [warningAlert, setWarningAlert] = useState(""); // New warningAlert state
+
+  // Check the online status on component mount
+  useEffect(() => {
+    if (!navigator.onLine) {
+      setWarningAlert("You are currently offline. The data may not be up to date.");
+    } else {
+      setWarningAlert(""); // Clear the warning if the user is online
+    }
+
+    // Listen for online/offline changes
+    const handleOnline = () => setWarningAlert("");
+    const handleOffline = () => setWarningAlert("You are offline. The data may not be up to date.");
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []); // Empty dependency array to run this once on mount
 
   useEffect(() => {
     fetchData();
@@ -33,6 +55,7 @@ function App() {
       <div className="alerts-container">
         {infoAlert && <InfoAlert text={infoAlert} />}
         {errorAlert && <ErrorAlert text={errorAlert} />} {/* Display ErrorAlert */}
+        {warningAlert && <WarningAlert text={warningAlert} />} {/* Display WarningAlert */}
       </div>
       <CitySearch
         allLocations={allLocations}
